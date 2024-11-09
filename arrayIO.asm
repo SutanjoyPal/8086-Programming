@@ -28,45 +28,41 @@ main proc
     mov bx,05d
     lea si,myArray
 
-    call PRINT_ARRAY
+    call printArr
 
     mov ah,4ch
     int 21h
 
 main endp
 
-PRINT_ARRAY PROC
-   ; this procedure will print the elements of a given array
-   ; input : SI=offset address of the array
-   ;       : BX=size of the array
-   ; output : none
 
-   PUSH AX                        ; push AX onto the STACK   
-   PUSH CX                        ; push CX onto the STACK
-   PUSH DX                        ; push DX onto the STACK
-   push SI
-   MOV CX, BX                     ; set CX=BX
+printArr proc 
+  push ax 
+  push cx  
+  push dx  
+  push si 
 
-   @PRINT_ARRAY:                  ; loop label
-     XOR AH, AH                   ; clear AH
-     MOV AL, [SI]                 ; set AL=[SI]
+  mov cx,bx
 
-     CALL writenum                  ; call the procedure OUTDEC
+arrayloop:
+    mov ah,00h
+    mov al, [si] 
+    call writenum                  
 
-     MOV AH, 2                    ; set output function
-     MOV DL, 20H                  ; set DL=20H
-     INT 21H                      ; print a character
+    mov ah, 02h
+    mov dl, 20H
+    int 21H
 
-     INC SI                       ; set SI=SI+1
-   LOOP @PRINT_ARRAY              ; jump to label @PRINT_ARRAY while CX!=0
+    inc si
+    loop arrayloop
 
-   pop SI
-   POP DX                         ; pop a value from STACK into DX
-   POP CX                         ; pop a value from STACK into CX
-   POP AX                         ; pop a value from STACK into AX
+  pop si
+  pop dx 
+  pop cx 
+  pop ax
 
-   RET                            ; return control to the calling procedure
- PRINT_ARRAY ENDP
+  RET
+printArr endp
 
 
 writenum PROC near
@@ -103,6 +99,5 @@ writenum PROC near
 
    RET                            ; return control to the calling procedure
 writenum ENDP
-
 
 end main
