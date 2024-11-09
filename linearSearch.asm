@@ -2,14 +2,18 @@
 .stack 300h
 
 .data
-;str db 0ah,0dh,'Hello World$'
+
 inputArrMsg db 0ah,0dh,'Enter array length: $'
+searchmsg db 0ah,0dh,'Enter number to be searched: $'
 sz db ?
+val db ?
 endl db 0ah,0dh,'$'
+
+foundmsg db 0ah,0dh,'Found at index: $'
+notfoundmsg db 0ah,0dh,'Not Found $'
 
 
 myArray DB 10, 20, 30, 40, 50  
-len EQU $ - myArray  
 .code
 
 print macro msg
@@ -33,12 +37,59 @@ main proc
     call inputArr
     xor bx,bx
     mov bl,sz
-    call printArr
-
+    ;call printArr
+    call linearSearch
     mov ah,4ch
     int 21h
 
 main endp
+
+linearSearch proc
+    push ax 
+    push bx 
+    push cx 
+    push dx  
+    push si
+
+    xor cx,cx
+    mov cl,sz
+
+    print searchmsg
+    call readnum
+    mov dx,ax
+    
+    mov bx,00h
+searchloop:
+    mov ah,00h
+    mov al,[si]
+    cmp ax,dx
+
+    jne notequal
+    print foundmsg
+    mov ax,bx
+    call print_number
+    print endl
+    jmp exitSearch
+
+
+
+notequal:
+    inc bx
+    inc si
+    loop searchloop
+
+
+
+    print notfoundmsg
+exitSearch:
+    pop si 
+    pop dx 
+    pop cx  
+    pop bx  
+    pop ax
+
+    RET
+linearSearch endp
   
 inputArr proc
   print inputArrMsg
