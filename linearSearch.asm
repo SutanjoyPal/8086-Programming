@@ -61,7 +61,7 @@ linearSearch proc
     mov bx,00h
 searchloop:
     mov ah,00h
-    mov al,[si]
+    mov al,[si+bx]
     cmp ax,dx
 
     jne notequal
@@ -75,7 +75,7 @@ searchloop:
 
 notequal:
     inc bx
-    inc si
+    ;inc si
     loop searchloop
 
 
